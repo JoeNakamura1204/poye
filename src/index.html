@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>POYE</title>
+    <script src="https://cdn.jsdelivr.net/npm/vue@2.5.17/dist/vue.js"></script>
+    <script language="javascript" type="text/javascript" src="./js/web3.min.js"></script>
+    <script language="javascript" type="text/javascript" src="./js/contract_abi.js"></script>
+    <script src="https://unpkg.com/vue-router/dist/vue-router.js"></script>
+
+<!-- component-->
+    <script language="javascript" type="text/javascript" src="./js/main.js"></script>
+    <script language="javascript" type="text/javascript" src="./js/send.js"></script>
+
+    <link rel="stylesheet" href="style.css">
+
+<!-- CSS Framework -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">  <!-- Font Awesome -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.1.3/css/bootstrap.min.css" rel="stylesheet"><!-- Bootstrap core CSS -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/mdbootstrap/4.5.9/css/mdb.min.css" rel="stylesheet"><!-- Material Design Bootstrap -->
+
+</head>
+<body>
+    <div id="app">
+        <!--nav-->
+        <nav class="navbar navbar-dark indigo">
+            <form class="form-inline">
+            </form>
+            <h2>Proof Of Your Existence</h2>
+            <h4>{{ yourAccount[0] }}</h4>
+        </nav>
+        <!--body-->
+        <!--<Topcomponent></Topcomponent>-->
+        <router-view></router-view>
+
+
+    </div>
+
+<script>
+
+    const Foo = { template: '<div>fooooooooooooooo</div>' };
+    const Bar = { template: '<div>barrrrrrrrrrrrrr</div>' };
+
+    const routes = [
+        { path: '/', component: Top },
+        { path: '/sendsoul', component: send }
+    ];
+
+    const router = new VueRouter({
+        routes // `routes: routes` の短縮表記
+    });
+
+
+    var contract;
+    var userAccount;
+
+    var app = new Vue({
+        el: '#app',
+        router,
+        data:{
+            yourAccount:""
+        },
+        created:function(){
+        this.startweb3();
+        this.connectWeb3();
+    }, methods:{
+            startweb3:function(){
+                if (typeof web3 !== 'undefined'){
+                    web3 = new Web3(web3.currentProvider);
+                    console.log("OK!!");
+                    (web3.eth.getAccounts((error,results) => {
+                        console.log('OK');
+                    this.yourAccount = results
+                }));
+                }else{
+                    console.log("No")
+                }
+            },
+            connectWeb3:function(){
+                var contract_address = "0xa4392264a2d8c998901d10c154c91725b1bf0158";
+                contract = new web3.eth.Contract(abi, contract_address);
+
+                var accountInterval = setInterval(function () {
+                    web3.eth.getAccounts((error, accounts) => {
+                        if(accounts[0] !== userAccount){
+                        userAccount = accounts[0];
+                        console.log(userAccount);
+                    }
+                });
+                }, 100);
+                console.log(web3.eth.getAccounts)
+            }
+        }
+    }).$mount('#app');
+
+</script>
+
+    <!-- JQuery --><script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <!-- Bootstrap tooltips --><script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.13.0/umd/popper.min.js"></script>
+    <!-- Bootstrap core JavaScript --><script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.1.3/js/bootstrap.min.js"></script>
+    <!-- MDB core JavaScript --><script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mdbootstrap/4.5.9/js/mdb.min.js"></script>
+</body>
+</html>
